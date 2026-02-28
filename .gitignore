@@ -272,6 +272,7 @@ __pycache__/
 # Bundle files
 *Bundle.css
 *Bundle.js
+test.txt
 
 /Burstroy.VideoServerAPI/wwwroot/StreamStorage
 /Burstroy.TCU.WebAssembly/Server/wwwroot/snapshots
