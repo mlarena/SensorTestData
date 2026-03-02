@@ -19,7 +19,7 @@ public class SensorsController : ControllerBase
         DateTime.Now.ToString("dd-MM-yyyy,HH:mm:ss");
 
     private static double RandomDouble(double min, double max) => 
-        _random.NextDouble() * (max - min) + min;
+        Math.Round(_random.NextDouble() * (max - min) + min, 4);
 
     private static int RandomInt(int min, int max) => 
         _random.Next(min, max + 1);
@@ -110,8 +110,8 @@ public class SensorsController : ControllerBase
         {
             Packet = new DOVPacket
             {
-                BrightFlag = RandomInt(0, 1), // значения 1 или 0
-                VisibleRange = RandomDouble(0.0, 3000.0) // от 0 до 3000.00
+                BrightFlag = RandomInt(0, 1),
+                VisibleRange = RandomDouble(0.0, 3000.0)
             }
         };
 
@@ -133,12 +133,12 @@ public class SensorsController : ControllerBase
         {
             Packet = new DUSTPacket
             {
-                PM10Act = Math.Round(pm10, 2),
-                PM10Awg = Math.Round(pm10 + RandomDouble(-1.0, 1.0), 2),
-                PM10Act2 = Math.Round(pm1, 2),
-                PM10Awg2 = Math.Round(pm1 + RandomDouble(-0.5, 0.5), 2),
-                PM25Act = Math.Round(pm25, 2),
-                PM25Awg = Math.Round(pm25 + RandomDouble(-0.8, 0.8), 2),
+                PM10Act = pm10,
+                PM10Awg = Math.Round(pm10 + RandomDouble(-1.0, 1.0), 4),
+                PM10Act2 = pm1,
+                PM10Awg2 = Math.Round(pm1 + RandomDouble(-0.5, 0.5), 4),
+                PM25Act = pm25,
+                PM25Awg = Math.Round(pm25 + RandomDouble(-0.8, 0.8), 4),
                 FlowProbe = RandomDouble(0.5, 2.0),
                 LaserStatus = RandomInt(500, 700),
                 HumidityProbe = RandomDouble(0.0, 50.0),

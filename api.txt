@@ -1,0 +1,30 @@
+http://localhost:5000/api/Sensors/DSPD
+http://localhost:5000/api/Sensors/IWS
+http://localhost:5000/api/Sensors/DOV
+http://localhost:5000/api/Sensors/DUST
+http://localhost:5000/api/Sensors/MUEKS
+
+http://localhost:5055/api/Sensors/DSPD
+http://192.168.77.150:5005/api/Sensors/IWS
+
+http://192.168.77.150:5005/api/Sensors/IWS
+
+sudo timedatectl set-timezone Europe/Moscow
+
+sudo systemctl start burstroy-sensor-testdata
+sudo systemctl stop burstroy-sensor-testdata
+sudo systemctl restart burstroy-sensor-testdata
+sudo systemctl status burstroy-sensor-testdata
+sudo journalctl -u burstroy-sensor-testdata -f
+sudo systemctl enable burstroy-sensor-testdata
+sudo systemctl disable burstroy-sensor-testdata
+
+sudo timedatectl set-timezone Europe/Moscow
+
+
+truncate table public."DOVData";
+truncate table public."DSPDData";
+truncate table public."DustData";
+truncate table public."IWSData";
+truncate table public."MUEKSData";
+truncate table public."SensorResults";
