@@ -1,12 +1,12 @@
 #!/bin/bash
 
-# Settings for Worker service
-SERVICE_NAME="burstroy-monitoring-worker"
-APP_NAME="BurstroyMonitoring.Worker"
-INSTALL_DIR="/opt/burstroy/worker"
+# Settings for Sensor Test Data service
+SERVICE_NAME="burstroy-sensor-test-data"
+APP_NAME="SensorTestData"  # Имя исполняемого файла после публикации
+INSTALL_DIR="/opt/burstroy/testdata"
 USER_NAME="burstroy"
-DESCRIPTION="Burstroy Monitoring Worker Service"
-APP_PORT="6009"
+DESCRIPTION="Burstroy Sensor Test Data Service"
+APP_PORT="6009"  # Порт по умолчанию, можно изменить при необходимости
 
 # Parse command line arguments for port
 while [[ $# -gt 0 ]]; do
@@ -42,7 +42,7 @@ fi
 if [ ! -f "$APP_EXEC" ]; then
     echo "Error: Application not found at $APP_EXEC"
     echo "Expected: $APP_NAME in $INSTALL_DIR/"
-    echo "Please run unpack script first: /opt/burstroy/unpack.sh"
+    echo "Please run install script first: sudo ./install-sensor-test-data.sh"
     exit 1
 fi
 
@@ -51,7 +51,7 @@ echo "Setting up $SERVICE_NAME on port $APP_PORT..."
 # Make the file executable
 chmod +x "$APP_EXEC"
 
-
+# Create user and group if they don't exist
 if ! getent group "$USER_NAME" &>/dev/null; then
     groupadd --system "$USER_NAME"
 fi
@@ -103,7 +103,7 @@ echo "✅ Service '$SERVICE_NAME' configured to run on http://*:$APP_PORT"
 echo "Installation directory: $INSTALL_DIR"
 echo ""
 
-# Попытка запуска и проверка
+# Attempt to start and check status
 echo "=== Starting service ==="
 sudo systemctl restart $SERVICE_NAME
 sleep 5

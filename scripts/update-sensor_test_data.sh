@@ -1,9 +1,9 @@
 #!/bin/bash
 
-# Settings for Worker service
-APP_NAME="BurstroyMonitoring.Worker"
-ZIP_FILE="BurstroyMonitoring.Worker.zip"
-INSTALL_DIR="/opt/burstroy/worker"
+# Settings for Sensor Test Data service
+APP_NAME="SensorTestData"
+ZIP_FILE="SensorTestData.zip"
+INSTALL_DIR="/opt/burstroy/testdata"
 USER_NAME="burstroy"
 
 # Root check
@@ -15,19 +15,27 @@ fi
 # Check if zip exists
 if [ ! -f "$ZIP_FILE" ]; then
     echo "Error: $ZIP_FILE not found in current directory."
+    echo "Please ensure $ZIP_FILE is in the current directory."
     exit 1
 fi
 
-echo "Updating $APP_NAME in $INSTALL_DIR (preserving config)..."
+# Check if installation exists
+if [ ! -d "$INSTALL_DIR" ]; then
+    echo "Error: Installation directory $INSTALL_DIR does not exist."
+    echo "Please run install script first: sudo ./install-sensor-test-data.sh"
+    exit 1
+fi
+
+echo "Updating $APP_NAME in $INSTALL_DIR (preserving configuration)..."
 
 # Stop service before update
-if systemctl is-active --quiet burstroy-worker; then
-    echo "Stopping burstroy-worker service..."
-    systemctl stop burstroy-worker
+if systemctl is-active --quiet burstroy-sensor-test-data; then
+    echo "Stopping burstroy-sensor-test-data service..."
+    systemctl stop burstroy-sensor-test-data
 fi
 
 # Create a temporary directory for extraction
-TMP_EXTRACT="/tmp/burstroy_worker_update"
+TMP_EXTRACT="/tmp/burstroy_testdata_update"
 rm -rf "$TMP_EXTRACT"
 mkdir -p "$TMP_EXTRACT"
 
@@ -38,6 +46,11 @@ unzip -o "$ZIP_FILE" -d "$TMP_EXTRACT"
 # Update executable
 echo "Updating executable..."
 cp "$TMP_EXTRACT/$APP_NAME" "$INSTALL_DIR/"
+
+# Copy any other necessary files (but preserve configs)
+# Uncomment if you need to copy additional files:
+# cp "$TMP_EXTRACT/"*.dll "$INSTALL_DIR/" 2>/dev/null || true
+# cp "$TMP_EXTRACT/"*.json "$INSTALL_DIR/" 2>/dev/null || true
 
 # Make executable
 echo "Setting permissions..."
@@ -52,4 +65,6 @@ file "$INSTALL_DIR/$APP_NAME"
 rm -rf "$TMP_EXTRACT"
 
 echo "✅ $APP_NAME updated successfully."
-echo "You can now start the service: sudo systemctl start burstroy-worker"
+echo ""
+echo "You can now start the service: sudo systemctl start burstroy-sensor-test-data"
+echo "Check status: sudo systemctl status burstroy-sensor-test-data"

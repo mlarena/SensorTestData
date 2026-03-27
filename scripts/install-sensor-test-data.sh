@@ -1,9 +1,9 @@
 #!/bin/bash
 
-# Settings for TCM service
-APP_NAME="BurstroyMonitoring.TCM"
-ZIP_FILE="BurstroyMonitoring.TCM.zip"
-INSTALL_DIR="/opt/burstroy/tcm"
+# Settings for Sensor Test Data service
+APP_NAME="SensorTestData"
+ZIP_FILE="SensorTestData.zip"
+INSTALL_DIR="/opt/burstroy/testdata"
 USER_NAME="burstroy"
 
 # Root check
@@ -15,18 +15,19 @@ fi
 # Check if zip exists
 if [ ! -f "$ZIP_FILE" ]; then
     echo "Error: $ZIP_FILE not found in current directory."
+    echo "Please ensure $ZIP_FILE is in the current directory."
     exit 1
 fi
 
-echo "Updating $APP_NAME in $INSTALL_DIR..."
+echo "Installing $APP_NAME to $INSTALL_DIR..."
 
 # Create directory if not exists
 mkdir -p "$INSTALL_DIR"
 
 # Stop service before update if it exists
-if systemctl is-active --quiet burstroy-monitoring-tcm; then
-    echo "Stopping burstroy-tcm service..."
-    systemctl stop burstroy-monitoring-tcm
+if systemctl is-active --quiet burstroy-sensor-test-data; then
+    echo "Stopping burstroy-sensor-test-data service..."
+    systemctl stop burstroy-sensor-test-data
 fi
 
 # Recreate directory to ensure it's empty and exists
@@ -47,5 +48,14 @@ chown -R "$USER_NAME:$USER_NAME" "$INSTALL_DIR"
 echo "File info for $APP_NAME:"
 file "$INSTALL_DIR/$APP_NAME"
 
-echo "✅ $APP_NAME updated successfully."
-echo "You can now start the service: sudo systemctl start burstroy-tcm"
+# Check if it's a valid executable
+if [ -x "$INSTALL_DIR/$APP_NAME" ]; then
+    echo "✅ $APP_NAME installed successfully."
+else
+    echo "⚠️  Warning: $APP_NAME is not executable or has incorrect format."
+fi
+
+echo ""
+echo "Installation complete. You can now:"
+echo "  1. Create service: sudo ./create-service-sensor-test-data.sh"
+echo "  2. Or start manually: $INSTALL_DIR/$APP_NAME"
