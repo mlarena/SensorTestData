@@ -37,6 +37,15 @@ public class MUEKSPacket
     [JsonPropertyName("U_OUT_12B")]
     public double UOut12B { get; set; }
 
+    [JsonPropertyName("owen_ch1")]
+    public object OwenCh1 { get; set; } = "err";
+
+    [JsonPropertyName("owen_ch2")]
+    public object OwenCh2 { get; set; } = "err";
+
+    [JsonPropertyName("door_status")]
+    public int DoorStatus { get; set; }
+
     [JsonPropertyName("Visible_range")]
     public string VisibleRange { get; set; } = "err";
 

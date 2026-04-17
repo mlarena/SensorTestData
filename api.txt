@@ -4,6 +4,12 @@ http://localhost:5055/api/Sensors/DOV
 http://localhost:5055/api/Sensors/DUST
 http://localhost:5055/api/Sensors/MUEKS
 
+http://192.168.19.137:6009/api/Sensors/IWS
+http://192.168.19.139:6009/api/Sensors/IWS
+
+http://192.168.19.137:6009/api/Sensors/v2/MUEKS
+http://192.168.19.139:6009/api/Sensors/v2/MUEKS
+
 curl http://localhost:6009/api/Sensors/DSPD
 curl http://localhost:6009/api/Sensors/IWS
 curl http://localhost:6009/api/Sensors/DOV
@@ -13,7 +19,7 @@ curl http://localhost:6009/api/Sensors/MUEKS
 sudo timedatectl set-timezone Europe/Moscow
 
 
-scp "C:\git\SensorTestData\release\linux-x64\SensorTestData.zip" devuser@192.168.192.143:/opt/burstroy/tmp 
+scp "C:\git\SensorTestData\release\linux-x64\SensorTestData.zip" devuser@192.168.19.139:/opt/burstroy/tmp 
 scp "C:\git\SensorTestData\release\linux-x64\SensorTestData.zip" devuser@192.168.19.137:/opt/burstroy/tmp 
 
 
