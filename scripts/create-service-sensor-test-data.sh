@@ -6,13 +6,18 @@ APP_NAME="SensorTestData"  # Имя исполняемого файла посл
 INSTALL_DIR="/opt/burstroy/testdata"
 USER_NAME="burstroy"
 DESCRIPTION="Burstroy Sensor Test Data Service"
-APP_PORT="6009"  # Порт по умолчанию, можно изменить при необходимости
+APP_PORT="6009"  # Порт по умолчанию для API
+METRICS_PORT="9102" # Порт для метрик Prometheus
 
 # Parse command line arguments for port
 while [[ $# -gt 0 ]]; do
     case $1 in
         --port|-p)
             APP_PORT="$2"
+            shift 2
+            ;;
+        --metrics-port|-m)
+            METRICS_PORT="$2"
             shift 2
             ;;
         *)
@@ -78,7 +83,7 @@ Type=simple
 User=$USER_NAME
 Group=$USER_NAME
 WorkingDirectory=$INSTALL_DIR
-ExecStart=$APP_EXEC --urls http://*:$APP_PORT
+ExecStart=$APP_EXEC --urls "http://*:$APP_PORT;http://*:$METRICS_PORT"
 Restart=always
 RestartSec=10
 TimeoutStartSec=60 
@@ -99,7 +104,9 @@ echo "Created service file: /etc/systemd/system/$SERVICE_NAME.service"
 systemctl daemon-reload
 systemctl enable $SERVICE_NAME
 
-echo "✅ Service '$SERVICE_NAME' configured to run on http://*:$APP_PORT"
+echo "✅ Service '$SERVICE_NAME' configured:"
+echo "   - API:     http://*:$APP_PORT"
+echo "   - Metrics: http://*:$METRICS_PORT/metrics"
 echo "Installation directory: $INSTALL_DIR"
 echo ""
 
@@ -120,3 +127,4 @@ echo "  Check status:     sudo systemctl status $SERVICE_NAME"
 echo "  View logs:        sudo journalctl -u $SERVICE_NAME -f"
 echo ""
 echo "Access the application at: http://$(hostname -I | awk '{print $1}'):$APP_PORT"
+echo "Access the metrics at:     http://$(hostname -I | awk '{print $1}'):$METRICS_PORT/metrics"

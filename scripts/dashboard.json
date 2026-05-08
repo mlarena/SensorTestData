@@ -1,0 +1,221 @@
+{
+  "dashboard": {
+    "title": ".NET Web API - Production Dashboard",
+    "description": "Мониторинг на основе ваших метрик",
+    "tags": ["dotnet", "aspnetcore", "production"],
+    "timezone": "browser",
+    "panels": [
+      {
+        "title": "📊 Total Requests (All Time)",
+        "type": "stat",
+        "targets": [{
+          "expr": "sum(http_requests_received_total)",
+          "legendFormat": "Total"
+        }],
+        "gridPos": {"h": 4, "w": 3, "x": 0, "y": 0},
+        "options": {"colorMode": "value", "graphMode": "none"}
+      },
+      {
+        "title": "⚡ Requests Per Second",
+        "type": "stat",
+        "targets": [{
+          "expr": "sum(rate(http_requests_received_total[$__rate_interval]))",
+          "legendFormat": "RPS"
+        }],
+        "gridPos": {"h": 4, "w": 3, "x": 3, "y": 0},
+        "options": {"colorMode": "value", "graphMode": "none"}
+      },
+      {
+        "title": "💾 Memory (MB)",
+        "type": "stat",
+        "targets": [{
+          "expr": "dotnet_total_memory_bytes / 1024 / 1024",
+          "legendFormat": "Memory"
+        }],
+        "gridPos": {"h": 4, "w": 3, "x": 6, "y": 0},
+        "options": {"colorMode": "value", "graphMode": "none"}
+      },
+      {
+        "title": "🖥️ CPU Usage",
+        "type": "stat",
+        "targets": [{
+          "expr": "rate(process_cpu_seconds_total[$__rate_interval])",
+          "legendFormat": "CPU"
+        }],
+        "gridPos": {"h": 4, "w": 3, "x": 9, "y": 0},
+        "options": {"colorMode": "value", "graphMode": "none"}
+      },
+      {
+        "title": "🔌 Active Connections",
+        "type": "stat",
+        "targets": [{
+          "expr": "microsoft_aspnetcore_server_kestrel_current_connections",
+          "legendFormat": "Kestrel Connections"
+        }],
+        "gridPos": {"h": 4, "w": 3, "x": 12, "y": 0},
+        "options": {"colorMode": "value", "graphMode": "none"}
+      },
+      {
+        "title": "🧵 Threads",
+        "type": "stat",
+        "targets": [{
+          "expr": "process_num_threads",
+          "legendFormat": "Threads"
+        }],
+        "gridPos": {"h": 4, "w": 3, "x": 15, "y": 0},
+        "options": {"colorMode": "value", "graphMode": "none"}
+      },
+      {
+        "title": "RPS by Endpoint",
+        "type": "timeseries",
+        "targets": [{
+          "expr": "sum by (endpoint) (rate(http_requests_received_total[$__rate_interval]))",
+          "legendFormat": "{{endpoint}}"
+        }],
+        "gridPos": {"h": 8, "w": 12, "x": 0, "y": 4},
+        "fieldConfig": {"defaults": {"unit": "reqps"}}
+      },
+      {
+        "title": "HTTP Status Codes",
+        "type": "piechart",
+        "targets": [{
+          "expr": "sum by (code) (http_requests_received_total)",
+          "legendFormat": "{{code}}"
+        }],
+        "gridPos": {"h": 8, "w": 6, "x": 12, "y": 4}
+      },
+      {
+        "title": "Memory Usage Over Time",
+        "type": "timeseries",
+        "targets": [
+          {
+            "expr": "dotnet_total_memory_bytes / 1024 / 1024",
+            "legendFormat": ".NET Memory (MB)"
+          },
+          {
+            "expr": "process_working_set_bytes / 1024 / 1024",
+            "legendFormat": "Working Set (MB)"
+          }
+        ],
+        "gridPos": {"h": 8, "w": 6, "x": 18, "y": 4},
+        "fieldConfig": {"defaults": {"unit": "bytes"}}
+      },
+      {
+        "title": "Request Duration (95th Percentile)",
+        "type": "timeseries",
+        "targets": [{
+          "expr": "histogram_quantile(0.95, sum(rate(http_request_duration_seconds_bucket[$__rate_interval])) by (le))",
+          "legendFormat": "p95 Duration"
+        }],
+        "gridPos": {"h": 8, "w": 8, "x": 0, "y": 12},
+        "fieldConfig": {"defaults": {"unit": "s"}}
+      },
+      {
+        "title": "Active Requests",
+        "type": "timeseries",
+        "targets": [
+          {
+            "expr": "sum(http_requests_in_progress)",
+            "legendFormat": "Active Requests"
+          },
+          {
+            "expr": "microsoft_aspnetcore_hosting_current_requests",
+            "legendFormat": "ASP.NET Core Requests"
+          }
+        ],
+        "gridPos": {"h": 8, "w": 8, "x": 8, "y": 12}
+      },
+      {
+        "title": "GC Collections",
+        "type": "timeseries",
+        "targets": [
+          {
+            "expr": "rate(dotnet_collection_count_total{generation=\"0\"}[$__rate_interval])",
+            "legendFormat": "Gen0"
+          },
+          {
+            "expr": "rate(dotnet_collection_count_total{generation=\"1\"}[$__rate_interval])",
+            "legendFormat": "Gen1"
+          },
+          {
+            "expr": "rate(dotnet_collection_count_total{generation=\"2\"}[$__rate_interval])",
+            "legendFormat": "Gen2"
+          }
+        ],
+        "gridPos": {"h": 8, "w": 8, "x": 16, "y": 12}
+      },
+      {
+        "title": "Exceptions Rate",
+        "type": "timeseries",
+        "targets": [
+          {
+            "expr": "rate(system_runtime_exception_count_total[$__rate_interval])",
+            "legendFormat": "Exceptions/s"
+          },
+          {
+            "expr": "rate(system_runtime_dotnet_exceptions[$__rate_interval])",
+            "legendFormat": ".NET Exceptions/s"
+          }
+        ],
+        "gridPos": {"h": 8, "w": 8, "x": 0, "y": 20},
+        "fieldConfig": {"defaults": {"unit": "cps"}}
+      },
+      {
+        "title": "Kestrel Metrics",
+        "type": "timeseries",
+        "targets": [
+          {
+            "expr": "rate(microsoft_aspnetcore_server_kestrel_total_connections[$__rate_interval])",
+            "legendFormat": "New Connections/s"
+          },
+          {
+            "expr": "microsoft_aspnetcore_server_kestrel_request_queue_length",
+            "legendFormat": "Request Queue Length"
+          }
+        ],
+        "gridPos": {"h": 8, "w": 8, "x": 8, "y": 20}
+      },
+      {
+        "title": "ThreadPool",
+        "type": "timeseries",
+        "targets": [
+          {
+            "expr": "system_runtime_threadpool_thread_count",
+            "legendFormat": "Threads"
+          },
+          {
+            "expr": "system_runtime_threadpool_queue_length",
+            "legendFormat": "Queue Length"
+          },
+          {
+            "expr": "rate(system_runtime_threadpool_completed_items_count_total[$__rate_interval])",
+            "legendFormat": "Completed Items/s"
+          }
+        ],
+        "gridPos": {"h": 8, "w": 8, "x": 16, "y": 20}
+      },
+      {
+        "title": "Open Handles",
+        "type": "timeseries",
+        "targets": [{
+          "expr": "process_open_handles",
+          "legendFormat": "Open Handles"
+        }],
+        "gridPos": {"h": 8, "w": 6, "x": 0, "y": 28}
+      },
+      {
+        "title": "Uptime",
+        "type": "stat",
+        "targets": [{
+          "expr": "time() - process_start_time_seconds",
+          "legendFormat": "Uptime"
+        }],
+        "gridPos": {"h": 4, "w": 6, "x": 6, "y": 28},
+        "options": {"colorMode": "none", "graphMode": "none"},
+        "fieldConfig": {"defaults": {"unit": "s"}}
+      }
+    ],
+    "time": {"from": "now-1h", "to": "now"},
+    "refresh": "30s"
+  }
+}

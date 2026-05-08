@@ -161,7 +161,7 @@ public class SensorsController : ControllerBase
         {
             Packet = new MUEKSPacket
             {
-                IAKB = RandomDouble(-1.0, 1.0),
+                IAKB = RandomDouble(0.0, 5.0),
                 UAKB = RandomDouble(24.0, 30.0),
                 WhAKB = RandomDouble(20.0, 80.0),
                 Datatime = GetCurrentDateTimeMUEKS(),
@@ -187,31 +187,37 @@ public class SensorsController : ControllerBase
     }
 
     /// <summary>
-    /// MUEKS v2 - Новая версия с поддержкой owen_ch и door_status
+    /// MUEKS v2 - Многоканальное устройство управления и контроля сенсоров с дополнительными каналами Owen
     /// </summary>
     [HttpGet("v2/MUEKS")]
     [ProducesResponseType(typeof(MUEKS), 200)]
     public ActionResult<MUEKS> GetMUEKSV2()
     {
-        bool isError = _random.Next(0, 2) == 0;
-
         var data = new MUEKS
         {
-            Serial = "Pinger_BF:00:00:0C:E7:CD:42:28",
             Packet = new MUEKSPacket
             {
-                IAKB = RandomDouble(-0.5, 0.0),
-                UAKB = RandomDouble(24.0, 25.0),
+                IAKB = RandomDouble(0.0, 5.0),
+                UAKB = RandomDouble(24.0, 30.0),
+                WhAKB = RandomDouble(20.0, 80.0),
                 Datatime = GetCurrentDateTimeMUEKS(),
-                OwenCh1 = isError ? "err" : RandomDouble(-5.0, 5.0),
-                OwenCh2 = isError ? "err" : RandomDouble(-5.0, 5.0),
-                IOut12B = RandomDouble(0.2, 0.3),
-                IOut48B = RandomDouble(0.0, 0.1),
-                Sens220B = 0,
-                UOut12B = RandomDouble(24.0, 25.0),
-                DoorStatus = RandomInt(0, 3),
-                UPowerIn12B = 0,
-                TemperatureBox = RandomDouble(25.0, 30.0)
+                IOut12B = RandomDouble(0.0, 2.0),
+                IOut48B = RandomDouble(0.0, 2.0),
+                Sens220B = RandomInt(0, 1),
+                UOut12B = RandomDouble(28.0, 32.0),
+                VisibleRange = "err",
+                UPowerIn12B = RandomDouble(28.0, 32.0),
+                TemperatureBox = RandomDouble(20.0, 35.0),
+                VS2kTemperature = "err",
+                VS2kSpiderStatus = "err",
+                VS2kRecvSoilFlag = "err",
+                VS2kSendSoilFlag = "err",
+                VS2kRecvSoilLevel = "err",
+                VS2kSendSoilLevel = "err",
+                VS2kRecvSoilRawLevel = "err",
+                VS2kSendSoilRawLevel = "err",
+                OwenCh1 = RandomDouble(15.0, 25.0),
+                OwenCh2 = RandomDouble(15.0, 25.0)
             }
         };
 

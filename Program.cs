@@ -1,3 +1,5 @@
+using Prometheus;
+using Prometheus.SystemMetrics;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
@@ -12,6 +14,9 @@ builder.Services.AddControllers()
         options.JsonSerializerOptions.WriteIndented = false;
     });
 
+// Добавляем системные метрики (CPU, Memory, Disk, etc.)
+builder.Services.AddSystemMetrics();
+
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle  
 builder.Services.AddEndpointsApiExplorer();
 
@@ -19,6 +24,10 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
+
+// Упрощаем: эндпоинт метрик будет доступен на всех настроенных портах
+// Но так как мы настроили Kestrel на 9102, Prometheus сможет забирать их оттуда
+app.MapMetrics();
 
 // OpenAPI endpoint (Microsoft.AspNetCore.OpenApi)
 app.MapOpenApi();
@@ -32,6 +41,10 @@ app.UseSwaggerUI(c =>
 });
 
 app.UseHttpsRedirection();
+
+// Включаем сбор метрик HTTP-запросов (количество, длительность, коды ответов)
+app.UseHttpMetrics();
+
 app.UseAuthorization();
 app.MapControllers();
 
